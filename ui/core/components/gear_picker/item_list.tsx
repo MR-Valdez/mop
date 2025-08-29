@@ -81,6 +81,8 @@ export default class ItemList<T extends ItemListType> {
 	private onItemClick: (itemData: ItemData<T>) => void;
 	private scroller: Clusterize;
 
+	private enableEotBPRef = ref<HTMLDivElement>();
+
 	private sortBy = ItemListSortBy.ILVL;
 	private sortDirection = SortDirection.DESC;
 
@@ -151,6 +153,7 @@ export default class ItemList<T extends ItemListType> {
 					<div ref={phaseSelectorRef} className="selector-modal-phase-selector" />
 					<div ref={show1hWeaponRef} className="sim-input selector-modal-boolean-option selector-modal-show-1h-weapons hide" />
 					<div ref={show2hWeaponRef} className="sim-input selector-modal-boolean-option selector-modal-show-2h-weapons hide" />
+					<div ref={this.enableEotBPRef} className="sim-input selector-modal-boolean-option selector-modal-show-enableEotBP" />
 					<div ref={matchingGemsRef} className="sim-input selector-modal-boolean-option selector-modal-show-matching-gems" />
 					{showEPOptions && <div ref={showEpValuesRef} className="sim-input selector-modal-boolean-option selector-modal-show-ep-values" />}
 					<button ref={removeButtonRef} className="selector-modal-remove-button btn btn-danger">
@@ -206,6 +209,7 @@ export default class ItemList<T extends ItemListType> {
 		) {
 			if (show1hWeaponRef.value) makeShow1hWeaponsSelector(show1hWeaponRef.value, player.sim);
 			if (show2hWeaponRef.value) makeShow2hWeaponsSelector(show2hWeaponRef.value, player.sim);
+			if (this.enableEotBPRef.value) makeShowEotBPSelector(this.enableEotBPRef.value, player.sim);
 		}
 
 		if (showEPOptions) {
@@ -332,6 +336,10 @@ export default class ItemList<T extends ItemListType> {
 		const newItem = this.equippedToItemFn(newEquippedItem);
 		const newItemId = this.getItemIdByItemType(newItem);
 		const newEP = newItem !== undefined && newItem !== null ? this.computeEP(newItem) : 0;
+
+		if (newEquippedItem?.item.gemSockets[0] == 10 || (newEquippedItem?.item.phase == 3 /* && ZoneId of 6622 */)) {
+			this.enableEotBPRef.value?.classList.remove('hide');
+		} else this.enableEotBPRef.value?.classList.add('hide');
 
 		this.scroller.elementUpdate(item => {
 			const idx = (item as HTMLElement).dataset.idx!;

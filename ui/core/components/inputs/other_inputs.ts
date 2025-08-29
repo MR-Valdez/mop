@@ -96,7 +96,7 @@ export function makeShowEotBPSelector(parent: HTMLElement, sim: Sim): BooleanPic
 		extraCssClasses: ['show-eotbp-weapons-selector', 'mb-0'],
 		label: 'EotBP',
 		inline: true,
-		description: "Enables Eye of the Black Prince for applicable weapons",
+		labelTooltip: "Enables Eye of the Black Prince for applicable weapons",
 		changedEvent: (sim: Sim) => sim.filtersChangeEmitter,
 		getValue: (sim: Sim) => sim.getEotBPToggle(),
 		setValue: (eventID: EventID, sim: Sim, newValue: boolean) => {
