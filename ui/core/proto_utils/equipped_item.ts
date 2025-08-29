@@ -475,7 +475,7 @@ export class EquippedItem {
 
 	// Whether this item could have an extra socket, assuming Blacksmithing.
 	couldHaveExtraSocket(): boolean {
-		return [ItemType.ItemTypeWaist, ItemType.ItemTypeWrist, ItemType.ItemTypeHands].includes(this.item.type);
+		return [ItemType.ItemTypeWaist, ItemType.ItemTypeWrist, ItemType.ItemTypeHands].includes(this.item.type) || (( this.item.phase == 3 || (this.item.gemSockets.length > 0 && this.item.gemSockets[0] == 10)) && ItemType.ItemTypeWeapon == this.item.type);
 	}
 
 	requiresExtraSocket(): boolean {
@@ -483,7 +483,7 @@ export class EquippedItem {
 	}
 
 	hasExtraSocket(isBlacksmithing: boolean): boolean {
-		return this.item.type == ItemType.ItemTypeWaist || (isBlacksmithing && [ItemType.ItemTypeWrist, ItemType.ItemTypeHands].includes(this.item.type));
+		return this.item.type == ItemType.ItemTypeWaist || (isBlacksmithing && [ItemType.ItemTypeWrist, ItemType.ItemTypeHands].includes(this.item.type)) || ((this.item.phase == 3 || (this.item.gemSockets.length > 0 && this.item.gemSockets[0] == 10)) && ItemType.ItemTypeWeapon == this.item.type);
 	}
 
 	numSockets(isBlacksmithing: boolean): number {

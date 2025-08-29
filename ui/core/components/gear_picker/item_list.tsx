@@ -23,6 +23,7 @@ import {
 	makeShow2hWeaponsSelector,
 	makeShowEPValuesSelector,
 	makeShowMatchingGemsSelector,
+	makeShowEotBPSelector,
 } from '../inputs/other_inputs';
 import { ItemNotice } from '../item_notice/item_notice';
 import Toast from '../toast';

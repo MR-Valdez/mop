@@ -72,6 +72,7 @@ export class Sim {
 	private faction: Faction = Faction.Alliance;
 	private fixedRngSeed = 0;
 	private filters: DatabaseFilters = Sim.defaultFilters();
+	private blackPrince = false;
 	private showDamageMetrics = true;
 	private showThreatMetrics = false;
 	private showHealingMetrics = false;
@@ -106,6 +107,7 @@ export class Sim {
 	readonly useSoftCapBreakpointsChangeEmitter = new TypedEvent<void>();
 	readonly languageChangeEmitter = new TypedEvent<void>();
 	readonly crashEmitter = new TypedEvent<SimError>();
+	readonly blackPrinceEmitter = new TypedEvent<void>();
 
 	// Emits when any of the settings change (but not the raid / encounter).
 	readonly settingsChangeEmitter: TypedEvent<void>;
@@ -779,6 +781,17 @@ export class Sim {
 		if (newIterations != this.iterations) {
 			this.iterations = newIterations;
 			this.iterationsChangeEmitter.emit(eventID);
+		}
+	}
+
+	getEotBPToggle(): boolean {
+		return this.blackPrince;
+	}
+
+	setEotBPToggle(eventID: EventID, newblackPrince: boolean) {
+		if (newblackPrince !== this.blackPrince) {
+			this.blackPrince = newblackPrince;
+			this.blackPrinceEmitter.emit(eventID);
 		}
 	}
 
