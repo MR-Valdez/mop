@@ -260,6 +260,7 @@ export class Player<SpecType extends Spec> {
 	private healingModel: HealingModel = HealingModel.create();
 	private healingEnabled = false;
 	private challengeModeEnabled = false;
+	private eyeOfTheBlackPrince = false;
 
 	private readonly autoRotationGenerator: AutoRotationGenerator<SpecType> | null = null;
 	private readonly simpleRotationGenerator: SimpleRotationGenerator<SpecType> | null = null;
@@ -305,6 +306,7 @@ export class Player<SpecType extends Spec> {
 	readonly breakpointLimitsChangeEmitter = new TypedEvent<void>('BreakpointLimits');
 	readonly miscOptionsChangeEmitter = new TypedEvent<void>('PlayerMiscOptions');
 	readonly challengeModeChangeEmitter = new TypedEvent<void>('ChallengeMode');
+	readonly eyeOfTheBlackPrinceEmitter = new TypedEvent<void>('EyeOfTheBlackPrince')
 
 	readonly currentStatsEmitter = new TypedEvent<void>('PlayerCurrentStats');
 	readonly epRatiosChangeEmitter = new TypedEvent<void>('PlayerEpRatios');
@@ -702,6 +704,17 @@ export class Player<SpecType extends Spec> {
 	}
 	isBlacksmithing(): boolean {
 		return this.hasProfession(Profession.Blacksmithing);
+	}
+
+	setEyeOfTheBlackPrince(eventID: EventID, newEyeOfTheBlackPrince: boolean) {
+		if (newEyeOfTheBlackPrince != this.eyeOfTheBlackPrince) {
+			this.eyeOfTheBlackPrince = newEyeOfTheBlackPrince
+			this.eyeOfTheBlackPrinceEmitter.emit(eventID);
+		}
+	}
+
+	getEyeOfTheBlackPrince(): boolean {
+		return this.eyeOfTheBlackPrince;
 	}
 
 	getFaction(): Faction {
@@ -1222,7 +1235,8 @@ export class Player<SpecType extends Spec> {
 
 	async setWowheadData(equippedItem: EquippedItem, elem: HTMLElement) {
 		const isBlacksmithing = this.hasProfession(Profession.Blacksmithing);
-		const gemIds = equippedItem.gems.length ? equippedItem.curGems(isBlacksmithing).map(gem => (gem ? gem.id : 0)) : [];
+		const hasEyeOfTheBlackPrince = this.getEyeOfTheBlackPrince()
+		const gemIds = equippedItem.gems.length ? equippedItem.curGems(isBlacksmithing, hasEyeOfTheBlackPrince).map(gem => (gem ? gem.id : 0)) : [];
 		const enchantIds = [equippedItem.enchant?.effectId, equippedItem.tinker?.effectId].filter((id): id is number => id !== undefined);
 		equippedItem.asActionId().setWowheadDataset(elem, {
 			gemIds,
@@ -1234,7 +1248,7 @@ export class Player<SpecType extends Spec> {
 				.asArray()
 				.filter(ei => ei != null)
 				.map(ei => ei!.item.id),
-			hasExtraSocket: equippedItem.hasExtraSocket(isBlacksmithing),
+			hasExtraSocket: equippedItem.hasExtraSocket(isBlacksmithing, hasEyeOfTheBlackPrince),
 			upgradeStep: equippedItem.upgrade,
 		});
 

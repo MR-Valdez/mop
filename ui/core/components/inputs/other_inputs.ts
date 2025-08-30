@@ -89,18 +89,18 @@ export function makePhaseSelector(parent: HTMLElement, sim: Sim): EnumPicker<Sim
 	});
 }
 
-export function makeShowEotBPSelector(parent: HTMLElement, sim: Sim): BooleanPicker<Sim> {
+export function makeShowEotBPSelector(parent: HTMLElement, player: Player<any>): BooleanPicker<Player<any>> {
 	parent.classList.remove('hide');
-	return new BooleanPicker<Sim>(parent, sim, {
+	return new BooleanPicker<Player<any>>(parent, player, {
 		id: 'show-eotbp-selector',
 		extraCssClasses: ['show-eotbp-weapons-selector', 'mb-0'],
 		label: 'EotBP',
 		inline: true,
 		labelTooltip: "Enables Eye of the Black Prince for applicable weapons",
-		changedEvent: (sim: Sim) => sim.filtersChangeEmitter,
-		getValue: (sim: Sim) => sim.getEotBPToggle(),
-		setValue: (eventID: EventID, sim: Sim, newValue: boolean) => {
-			sim.setEotBPToggle(eventID, newValue)
+		changedEvent: (player: Player<any>) => player.eyeOfTheBlackPrinceEmitter,
+		getValue: (player: Player<any>) => player.getEyeOfTheBlackPrince(),
+		setValue: (eventID: EventID, player: Player<any>, newValue: boolean) => {
+			player.setEyeOfTheBlackPrince(eventID, newValue)
 		},
 	});
 }

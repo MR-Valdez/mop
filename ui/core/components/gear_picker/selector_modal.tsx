@@ -134,7 +134,7 @@ export default class SelectorModal extends BaseModal {
 			(selectedTab === SelectorModalTabs.Reforging && !hasEligibleReforges) ||
 			(selectedTab === SelectorModalTabs.Upgrades && !hasEligibleUpgrades) ||
 			([SelectorModalTabs.Gem1, SelectorModalTabs.Gem2, SelectorModalTabs.Gem3].includes(selectedTab) &&
-				equippedItem?.numSockets(this.player.isBlacksmithing()) === 0)
+				equippedItem?.numSockets(this.player.isBlacksmithing(), this.player.getEyeOfTheBlackPrince()) === 0)
 		) {
 			selectedTab = SelectorModalTabs.Items;
 		}
@@ -351,7 +351,7 @@ export default class SelectorModal extends BaseModal {
 		}
 
 		const socketBonusEP = this.player.computeStatsEP(new Stats(equippedItem.item.socketBonus)) / (equippedItem.item.gemSockets.length || 1);
-		equippedItem.curSocketColors(this.player.isBlacksmithing()).forEach((socketColor, socketIdx) => {
+		equippedItem.curSocketColors(this.player.isBlacksmithing(), this.player.getEyeOfTheBlackPrince()).forEach((socketColor, socketIdx) => {
 			const label = SelectorModalTabs[`Gem${socketIdx + 1}` as keyof typeof SelectorModalTabs];
 			this.addTab<Gem>({
 				id: sanitizeId(`${this.options.id}-${label}`),

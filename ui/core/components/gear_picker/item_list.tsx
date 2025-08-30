@@ -10,7 +10,7 @@ import { Class, GemColor, ItemLevelState, ItemQuality, ItemRandomSuffix, ItemSlo
 import { DatabaseFilters, RepFaction, UIEnchant as Enchant, UIGem as Gem, UIItem as Item, UIItem_FactionRestriction } from '../../proto/ui';
 import { ActionId } from '../../proto_utils/action_id';
 import { getUniqueEnchantString } from '../../proto_utils/enchants';
-import { EquippedItem, ReforgeData } from '../../proto_utils/equipped_item';
+import { EquippedItem, isShaTouchedWeapon, isThroneOfThunderWeapon, ReforgeData } from '../../proto_utils/equipped_item';
 import { difficultyNames, professionNames, REP_FACTION_NAMES, REP_FACTION_QUARTERMASTERS, REP_LEVEL_NAMES } from '../../proto_utils/names';
 import { getPVPSeasonFromItem, isPVPItem } from '../../proto_utils/utils';
 import { Sim } from '../../sim';
@@ -209,7 +209,7 @@ export default class ItemList<T extends ItemListType> {
 		) {
 			if (show1hWeaponRef.value) makeShow1hWeaponsSelector(show1hWeaponRef.value, player.sim);
 			if (show2hWeaponRef.value) makeShow2hWeaponsSelector(show2hWeaponRef.value, player.sim);
-			if (this.enableEotBPRef.value) makeShowEotBPSelector(this.enableEotBPRef.value, player.sim);
+			if (this.enableEotBPRef.value) makeShowEotBPSelector(this.enableEotBPRef.value, player);
 		}
 
 		if (showEPOptions) {
@@ -337,7 +337,7 @@ export default class ItemList<T extends ItemListType> {
 		const newItemId = this.getItemIdByItemType(newItem);
 		const newEP = newItem !== undefined && newItem !== null ? this.computeEP(newItem) : 0;
 
-		if (newEquippedItem?.item.gemSockets[0] == 10 || (newEquippedItem?.item.phase == 3 /* && ZoneId of 6622 */)) {
+		if (newEquippedItem !== null && (isShaTouchedWeapon(newEquippedItem.item) || isThroneOfThunderWeapon(newEquippedItem.item))) {
 			this.enableEotBPRef.value?.classList.remove('hide');
 		} else this.enableEotBPRef.value?.classList.add('hide');
 

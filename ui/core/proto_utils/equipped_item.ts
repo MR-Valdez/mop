@@ -25,6 +25,13 @@ export const getWeaponDPS = (item: Item, upgradeStep: ItemLevelState = ItemLevel
 	return (weaponDamageMin + weaponDamageMax) / 2 / (item.weaponSpeed || 1);
 };
 
+export const isThroneOfThunderWeapon = (item: Item) =>
+    item.type == ItemType.ItemTypeWeapon &&
+    item.phase == 3 &&
+    item.sources.some(itemSource => itemSource.source.oneofKind === 'drop' && itemSource.source.drop.zoneId === 6622);
+
+export const isShaTouchedWeapon = (item: Item) => item.gemSockets.some(socket => socket === GemColor.GemColorShaTouched);
+
 export const getWeaponStatsBySlot = (item: Item, slot: ItemSlot, upgradeStep: ItemLevelState = ItemLevelState.Base) => {
 	let itemStats = new Stats();
 	if (item.weaponSpeed > 0) {
@@ -475,19 +482,24 @@ export class EquippedItem {
 
 	// Whether this item could have an extra socket, assuming Blacksmithing.
 	couldHaveExtraSocket(): boolean {
-		return [ItemType.ItemTypeWaist, ItemType.ItemTypeWrist, ItemType.ItemTypeHands].includes(this.item.type) || (( this.item.phase == 3 || (this.item.gemSockets.length > 0 && this.item.gemSockets[0] == 10)) && ItemType.ItemTypeWeapon == this.item.type);
+		return [ItemType.ItemTypeWaist, ItemType.ItemTypeWrist, ItemType.ItemTypeHands].includes(this.item.type) ||
+		isThroneOfThunderWeapon(this.item) ||
+		isShaTouchedWeapon(this.item)
 	}
 
 	requiresExtraSocket(): boolean {
 		return [ItemType.ItemTypeWrist, ItemType.ItemTypeHands].includes(this.item.type) && this.hasExtraGem() && this._gems[this._gems.length - 1] != null;
 	}
 
-	hasExtraSocket(isBlacksmithing: boolean): boolean {
-		return this.item.type == ItemType.ItemTypeWaist || (isBlacksmithing && [ItemType.ItemTypeWrist, ItemType.ItemTypeHands].includes(this.item.type)) || ((this.item.phase == 3 || (this.item.gemSockets.length > 0 && this.item.gemSockets[0] == 10)) && ItemType.ItemTypeWeapon == this.item.type);
+	hasExtraSocket(isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): boolean {
+		return (this.item.type == ItemType.ItemTypeWaist ||
+			(isBlacksmithing && [ItemType.ItemTypeWrist, ItemType.ItemTypeHands].includes(this.item.type)) ||
+			(hasEyeOfTheBlackPrince && (isThroneOfThunderWeapon(this.item) || isShaTouchedWeapon(this.item)))
+		)
 	}
 
-	numSockets(isBlacksmithing: boolean): number {
-		return this._item.gemSockets.length + (this.hasExtraSocket(isBlacksmithing) ? 1 : 0);
+	numSockets(isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): number {
+		return this._item.gemSockets.length + (this.hasExtraSocket(isBlacksmithing, hasEyeOfTheBlackPrince) ? 1 : 0);
 	}
 
 	numSocketsOfColor(color: GemColor | null): number {
@@ -523,15 +535,15 @@ export class EquippedItem {
 	allSocketColors(): Array<GemColor> {
 		return this.couldHaveExtraSocket() ? this._item.gemSockets.concat([GemColor.GemColorPrismatic]) : this._item.gemSockets;
 	}
-	curSocketColors(isBlacksmithing: boolean): Array<GemColor> {
-		return this.hasExtraSocket(isBlacksmithing) ? this._item.gemSockets.concat([GemColor.GemColorPrismatic]) : this._item.gemSockets;
+	curSocketColors(isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): Array<GemColor> {
+		return this.hasExtraSocket(isBlacksmithing, hasEyeOfTheBlackPrince) ? this._item.gemSockets.concat([GemColor.GemColorPrismatic]) : this._item.gemSockets;
 	}
 
-	curGems(isBlacksmithing: boolean): Array<Gem | null> {
-		return this._gems.slice(0, this.numSockets(isBlacksmithing));
+	curGems(isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): Array<Gem | null> {
+		return this._gems.slice(0, this.numSockets(isBlacksmithing, hasEyeOfTheBlackPrince));
 	}
-	curEquippedGems(isBlacksmithing: boolean): Array<Gem> {
-		return this.curGems(isBlacksmithing).filter(g => g != null) as Array<Gem>;
+	curEquippedGems(isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): Array<Gem> {
+		return this.curGems(isBlacksmithing, hasEyeOfTheBlackPrince).filter(g => g != null) as Array<Gem>;
 	}
 
 	getProfessionRequirements(): Array<Profession> {

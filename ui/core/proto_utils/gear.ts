@@ -188,21 +188,21 @@ export class Gear extends BaseGear {
 		});
 	}
 
-	getAllGems(isBlacksmithing: boolean): Array<Gem> {
+	getAllGems(isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): Array<Gem> {
 		return this.asArray()
-			.map(ei => (ei == null ? [] : ei.curEquippedGems(isBlacksmithing)))
+			.map(ei => (ei == null ? [] : ei.curEquippedGems(isBlacksmithing, hasEyeOfTheBlackPrince)))
 			.flat();
 	}
 
-	getNonMetaGems(isBlacksmithing: boolean): Array<Gem> {
-		return this.getAllGems(isBlacksmithing).filter(gem => gem.color != GemColor.GemColorMeta);
+	getNonMetaGems(isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): Array<Gem> {
+		return this.getAllGems(isBlacksmithing, hasEyeOfTheBlackPrince).filter(gem => gem.color != GemColor.GemColorMeta);
 	}
 
-	statsFromGems(isBlacksmithing: boolean): Stats {
+	statsFromGems(isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): Stats {
 		let stats = new Stats();
 
 		// Stats from just the gems.
-		const gems = this.getAllGems(isBlacksmithing);
+		const gems = this.getAllGems(isBlacksmithing, hasEyeOfTheBlackPrince);
 		for (let i = 0; i < gems.length; i++) {
 			stats = stats.add(new Stats(gems[i].stats));
 		}
@@ -216,20 +216,20 @@ export class Gear extends BaseGear {
 		return stats;
 	}
 
-	getGemsOfColor(color: GemColor, isBlacksmithing: boolean): Array<Gem> {
-		return this.getAllGems(isBlacksmithing).filter(gem => gem.color == color);
+	getGemsOfColor(color: GemColor, isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): Array<Gem> {
+		return this.getAllGems(isBlacksmithing, hasEyeOfTheBlackPrince).filter(gem => gem.color == color);
 	}
 
-	getJCGems(isBlacksmithing: boolean): Array<Gem> {
-		return this.getAllGems(isBlacksmithing).filter(gem => gem.requiredProfession == Profession.Jewelcrafting);
+	getJCGems(isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): Array<Gem> {
+		return this.getAllGems(isBlacksmithing, hasEyeOfTheBlackPrince).filter(gem => gem.requiredProfession == Profession.Jewelcrafting);
 	}
 
 	getMetaGem(): Gem | null {
 		return this.getGemsOfColor(GemColor.GemColorMeta, true)[0] || null;
 	}
 
-	gemColorCounts(isBlacksmithing: boolean): { red: number; yellow: number; blue: number } {
-		const gems = this.getAllGems(isBlacksmithing);
+	gemColorCounts(isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): { red: number; yellow: number; blue: number } {
+		const gems = this.getAllGems(isBlacksmithing, hasEyeOfTheBlackPrince);
 		return {
 			red: gems.filter(gem => gemMatchesSocket(gem, GemColor.GemColorRed)).length,
 			yellow: gems.filter(gem => gemMatchesSocket(gem, GemColor.GemColorYellow)).length,
@@ -252,18 +252,18 @@ export class Gear extends BaseGear {
 	}
 
 	// Returns true if this gear set has a meta gem AND the other gems meet the meta's conditions.
-	hasActiveMetaGem(isBlacksmithing: boolean): boolean {
+	hasActiveMetaGem(isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): boolean {
 		const metaGem = this.getMetaGem();
 		if (!metaGem) {
 			return false;
 		}
 
-		const gemColorCounts = this.gemColorCounts(isBlacksmithing);
+		const gemColorCounts = this.gemColorCounts(isBlacksmithing, hasEyeOfTheBlackPrince);
 		return isMetaGemActive(metaGem, gemColorCounts.red, gemColorCounts.yellow, gemColorCounts.blue);
 	}
 
-	hasInactiveMetaGem(isBlacksmithing: boolean): boolean {
-		return this.getMetaGem() != null && !this.hasActiveMetaGem(isBlacksmithing);
+	hasInactiveMetaGem(isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): boolean {
+		return this.getMetaGem() != null && !this.hasActiveMetaGem(isBlacksmithing, hasEyeOfTheBlackPrince);
 	}
 
 	withGem(itemSlot: ItemSlot, socketIdx: number, gem: Gem | null): Gear {
@@ -276,7 +276,7 @@ export class Gear extends BaseGear {
 		return this;
 	}
 
-	withSingleGemSubstitution(oldGem: Gem | null, newGem: Gem | null, isBlacksmithing: boolean): Gear {
+	withSingleGemSubstitution(oldGem: Gem | null, newGem: Gem | null, isBlacksmithing: boolean, hasEyeOfTheBlackPrince = false): Gear {
 		for (const slot of this.getItemSlots()) {
 			const item = this.getEquippedItem(slot);
 
@@ -284,7 +284,7 @@ export class Gear extends BaseGear {
 				continue;
 			}
 
-			const currentGems = item!.curGems(isBlacksmithing);
+			const currentGems = item!.curGems(isBlacksmithing, hasEyeOfTheBlackPrince);
 
 			if (currentGems.includes(oldGem)) {
 				const socketIdx = currentGems.indexOf(oldGem);

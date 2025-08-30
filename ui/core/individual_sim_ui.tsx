@@ -257,7 +257,7 @@ export abstract class IndividualSimUI<SpecType extends Spec> extends SimUI {
 		this.addWarning({
 			updateOn: this.player.gearChangeEmitter,
 			getContent: () => {
-				if (!this.player.getGear().hasInactiveMetaGem(this.player.isBlacksmithing())) {
+				if (!this.player.getGear().hasInactiveMetaGem(this.player.isBlacksmithing(), this.player.getEyeOfTheBlackPrince())) {
 					return '';
 				}
 
@@ -279,7 +279,7 @@ export abstract class IndividualSimUI<SpecType extends Spec> extends SimUI {
 		this.addWarning({
 			updateOn: this.player.gearChangeEmitter,
 			getContent: () => {
-				const jcGems = this.player.getGear().getJCGems(this.player.isBlacksmithing());
+				const jcGems = this.player.getGear().getJCGems(this.player.isBlacksmithing(), this.player.getEyeOfTheBlackPrince());
 				if (jcGems.length <= 2) {
 					return '';
 				}

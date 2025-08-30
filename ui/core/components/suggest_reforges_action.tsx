@@ -1050,7 +1050,7 @@ export class ReforgeOptimizer {
 			}
 
 			const distributedSocketBonus = new Stats(scaledItem.item.socketBonus)
-				.scale(1.0 / (scaledItem.curSocketColors(this.player.isBlacksmithing()).length || 1))
+				.scale(1.0 / (scaledItem.curSocketColors(this.player.isBlacksmithing(), this.player.getEyeOfTheBlackPrince()).length || 1))
 				.getBuffedStats();
 
 			// First determine whether the socket bonus should be obviously matched in order to save on brute force computation.
@@ -1069,7 +1069,7 @@ export class ReforgeOptimizer {
 			dummyVariables.set('matched', new Map<string, number>());
 			dummyVariables.set('unmatched', new Map<string, number>());
 
-			for (const [_, socketColor] of item.curSocketColors(this.player.isBlacksmithing()).entries()) {
+			for (const [_, socketColor] of item.curSocketColors(this.player.isBlacksmithing(), this.player.getEyeOfTheBlackPrince()).entries()) {
 				if (![GemColor.GemColorRed, GemColor.GemColorBlue, GemColor.GemColorYellow, GemColor.GemColorPrismatic].includes(socketColor)) {
 					break;
 				}
@@ -1099,7 +1099,7 @@ export class ReforgeOptimizer {
 				forceSocketBonus = true;
 			}
 
-			item.curSocketColors(this.player.isBlacksmithing()).forEach((socketColor, socketIdx) => {
+			item.curSocketColors(this.player.isBlacksmithing(), this.player.getEyeOfTheBlackPrince()).forEach((socketColor, socketIdx) => {
 				let gemColorKeys: GemColor[] = [];
 
 				if ([GemColor.GemColorPrismatic, GemColor.GemColorCogwheel, GemColor.GemColorShaTouched].includes(socketColor)) {
@@ -1288,7 +1288,7 @@ export class ReforgeOptimizer {
 
 			if (this.includeGems) {
 				gear.getEquippedItem(slot)
-					?.curSocketColors(this.player.isBlacksmithing())
+					?.curSocketColors(this.player.isBlacksmithing(), this.player.getEyeOfTheBlackPrince())
 					.forEach((_, socketIdx) => {
 						constraints.set(`${slot}_${socketIdx}`, lessEq(1));
 					});
