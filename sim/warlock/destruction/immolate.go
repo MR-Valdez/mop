@@ -100,15 +100,15 @@ func (destruction *DestructionWarlock) registerImmolate() {
 
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, useSnapshot bool) *core.SpellResult {
 			dot := spell.Dot(target)
-			if useSnapshot {
-				result := dot.CalcSnapshotDamage(sim, target, dot.OutcomeExpectedSnapshotCrit)
-				result.Damage /= dot.TickPeriod().Seconds()
-				return result
-			} else {
-				result := spell.CalcPeriodicDamage(sim, target, destruction.CalcScalingSpellDmg(immolateCoeff), spell.OutcomeExpectedMagicCrit)
-				result.Damage /= dot.CalcTickPeriod().Round(time.Millisecond).Seconds()
-				return result
-			}
+			return dot.CalcExpectedTickDamage(sim, target, useSnapshot,
+				func(s *core.Spell, u *core.Unit) float64 {
+					return destruction.CalcScalingSpellDmg(immolateCoeff)
+				},
+				dot.OutcomeExpectedSnapshotCrit,
+				spell.OutcomeExpectedMagicCrit,
+				false,
+				nil,
+			)
 		},
 	})
 }

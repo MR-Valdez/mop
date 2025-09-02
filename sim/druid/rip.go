@@ -83,20 +83,25 @@ func (druid *Druid) registerRipSpell() {
 		},
 
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, useSnapshot bool) *core.SpellResult {
-			if useSnapshot {
-				dot := spell.Dot(target)
-				return dot.CalcSnapshotDamage(sim, target, dot.OutcomeExpectedSnapshotCrit)
-			} else {
-				cp := 5.0 // Hard-code this so that snapshotting calculations can be performed at any CP value.
-				ap := spell.MeleeAttackPower()
-				baseTickDamage := baseDamage + comboPointCoeff*cp + attackPowerCoeff*cp*ap
-				result := spell.CalcPeriodicDamage(sim, target, baseTickDamage, spell.OutcomeExpectedMagicAlwaysHit)
-				attackTable := spell.Unit.AttackTables[target.UnitIndex]
-				critChance := spell.PhysicalCritChance(attackTable)
-				critMod := critChance * (spell.CritMultiplier - 1)
-				result.Damage *= 1 + critMod
-				return result
-			}
+			dot := spell.Dot(target)
+			return dot.CalcExpectedTickDamage(sim, target, useSnapshot,
+				func(s *core.Spell, u *core.Unit) float64 {
+					cp := 5.0 // Hard-code this so that snapshotting calculations can be performed at any CP value.
+					ap := spell.MeleeAttackPower()
+					return baseDamage + comboPointCoeff*cp + attackPowerCoeff*cp*ap
+				},
+				dot.OutcomeExpectedSnapshotCrit,
+				spell.OutcomeExpectedMagicAlwaysHit,
+				true,
+				func(sr *core.SpellResult, d *core.Dot) {
+					if !useSnapshot {
+						attackTable := spell.Unit.AttackTables[target.UnitIndex]
+						critChance := spell.PhysicalCritChance(attackTable)
+						critMod := critChance * (spell.CritMultiplier - 1)
+						sr.Damage *= 1 + critMod
+					}
+				},
+			)
 		},
 	})
 

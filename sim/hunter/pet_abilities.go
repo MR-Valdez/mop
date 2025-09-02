@@ -349,8 +349,16 @@ func (hp *HunterPet) newFrostStormBreath() *core.Spell {
 			}
 		},
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, _ bool) *core.SpellResult {
-			baseDamage := 206 + (spell.MeleeAttackPower() * 0.40)
-			return spell.CalcPeriodicDamage(sim, target, baseDamage, spell.OutcomeExpectedMagicCrit)
+			dot := spell.Dot(target)
+			return dot.CalcExpectedTickDamage(sim, target, false,
+				func(s *core.Spell, u *core.Unit) float64 {
+					return 206 + (spell.MeleeAttackPower() * 0.40)
+				},
+				nil,
+				spell.OutcomeExpectedMagicCrit,
+				true,
+				nil,
+			)
 		},
 	})
 	return hp.frostStormBreath

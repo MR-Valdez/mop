@@ -55,7 +55,16 @@ func (shadow *ShadowPriest) registerMindFlaySpell() *core.Spell {
 			}
 		},
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, _ bool) *core.SpellResult {
-			return spell.CalcPeriodicDamage(sim, target, shadow.CalcScalingSpellDmg(MfScale), spell.OutcomeExpectedMagicCrit)
+			dot := spell.Dot(target)
+			return dot.CalcExpectedTickDamage(sim, target, false,
+				func(s *core.Spell, u *core.Unit) float64 {
+					return shadow.CalcScalingSpellDmg(MfScale)
+				},
+				nil,
+				spell.OutcomeExpectedMagicCrit,
+				true,
+				nil,
+			)
 		},
 	})
 }

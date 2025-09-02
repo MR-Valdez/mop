@@ -63,13 +63,16 @@ func (priest *Priest) registerShadowWordPainSpell() {
 		},
 
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, useSnapshot bool) *core.SpellResult {
-			if useSnapshot {
-				dot := spell.Dot(target)
-				return dot.CalcSnapshotDamage(sim, target, dot.OutcomeExpectedMagicSnapshotCrit)
-			} else {
-				baseDamage := 194.709
-				return spell.CalcPeriodicDamage(sim, target, baseDamage, spell.OutcomeExpectedMagicCrit)
-			}
+			dot := spell.Dot(target)
+			return dot.CalcExpectedTickDamage(sim, target, useSnapshot,
+				func(s *core.Spell, u *core.Unit) float64 {
+					return priest.CalcScalingSpellDmg(SwpScaleCoeff)
+				},
+				dot.OutcomeExpectedSnapshotCrit,
+				spell.OutcomeExpectedMagicCrit,
+				false,
+				nil,
+			)
 		},
 	})
 }

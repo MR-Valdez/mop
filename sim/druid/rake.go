@@ -74,20 +74,21 @@ func (druid *Druid) registerRakeSpell() {
 		},
 
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, useSnapshot bool) *core.SpellResult {
-			if useSnapshot {
-				dot := spell.Dot(target)
-				return dot.CalcSnapshotDamage(sim, target, dot.OutcomeExpectedSnapshotCrit)
-			} else {
-				tickBase := flatBaseDamage + bonusCoefficientFromAP*spell.MeleeAttackPower()
-				ticks := spell.CalcPeriodicDamage(sim, target, tickBase, spell.OutcomeExpectedMagicAlwaysHit)
-
-				attackTable := spell.Unit.AttackTables[target.UnitIndex]
-				critChance := spell.PhysicalCritChance(attackTable)
-				critMod := (critChance * (spell.CritMultiplier - 1))
-				ticks.Damage *= 1 + critMod
-
-				return ticks
-			}
+			dot := spell.Dot(target)
+			return dot.CalcExpectedTickDamage(sim, target, useSnapshot,
+				func(s *core.Spell, u *core.Unit) float64 {
+					return flatBaseDamage + bonusCoefficientFromAP*spell.MeleeAttackPower()
+				},
+				dot.OutcomeExpectedSnapshotCrit,
+				spell.OutcomeExpectedMagicAlwaysHit,
+				true,
+				func(sr *core.SpellResult, d *core.Dot) {
+					attackTable := spell.Unit.AttackTables[target.UnitIndex]
+					critChance := spell.PhysicalCritChance(attackTable)
+					critMod := (critChance * (spell.CritMultiplier - 1))
+					sr.Damage *= 1 + critMod
+				},
+			)
 		},
 	})
 
