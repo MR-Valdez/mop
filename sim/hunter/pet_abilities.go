@@ -350,17 +350,14 @@ func (hp *HunterPet) newFrostStormBreath() *core.Spell {
 		},
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, _ bool) *core.SpellResult {
 			dot := spell.Dot(target)
-			return dot.CalcExpectedTickDamage(core.ExpectedTickConfig{
-				Sim:         sim,
-				Target:      target,
+			return dot.CalcExpectedTickDamage(sim, target, core.ExpectedTickConfig{
 				UseSnapshot: false,
 				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
 					return 206 + (spell.MeleeAttackPower() * 0.40)
 				},
-				SnapshotCrit:           nil,
-				NormalCrit:             spell.OutcomeExpectedMagicCrit,
+				SnapshotOutcome:        nil,
+				NormalOutcome:          spell.OutcomeExpectedMagicCrit,
 				SkipHasteNormalization: true,
-				ModifyResult:           nil,
 			})
 		},
 	})

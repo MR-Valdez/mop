@@ -107,17 +107,14 @@ func (shadow *ShadowPriest) registerSolaceAndInstanity() {
 		},
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, _ bool) *core.SpellResult {
 			dot := spell.Dot(target)
-			return dot.CalcExpectedTickDamage(core.ExpectedTickConfig{
-				Sim:         sim,
-				Target:      target,
+			return dot.CalcExpectedTickDamage(sim, target, core.ExpectedTickConfig{
 				UseSnapshot: false,
 				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
 					return shadow.CalcScalingSpellDmg(MfScale)
 				},
-				SnapshotCrit:           nil,
-				NormalCrit:             spell.OutcomeExpectedMagicCrit,
+				SnapshotOutcome:        nil,
+				NormalOutcome:          spell.OutcomeExpectedMagicCrit,
 				SkipHasteNormalization: true,
-				ModifyResult:           nil,
 			})
 		},
 		ExtraCastCondition: func(sim *core.Simulation, target *core.Unit) bool {

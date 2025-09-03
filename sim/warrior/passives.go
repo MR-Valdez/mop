@@ -92,17 +92,14 @@ func (warrior *Warrior) registerDeepWounds() {
 
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, useSnapshot bool) *core.SpellResult {
 			dot := spell.Dot(target)
-			return dot.CalcExpectedTickDamage(core.ExpectedTickConfig{
-				Sim:         sim,
-				Target:      target,
+			return dot.CalcExpectedTickDamage(sim, target, core.ExpectedTickConfig{
 				UseSnapshot: useSnapshot,
 				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
 					return warrior.CalcScalingSpellDmg(deepWoundsCoeff) + deepWoundsBonusCoeff*s.MeleeAttackPower()
 				},
-				SnapshotCrit:           dot.OutcomeExpectedSnapshotCrit,
-				NormalCrit:             spell.OutcomeExpectedPhysicalCrit,
+				SnapshotOutcome:        dot.OutcomeExpectedSnapshotCrit,
+				NormalOutcome:          spell.OutcomeExpectedPhysicalCrit,
 				SkipHasteNormalization: true,
-				ModifyResult:           nil,
 			})
 		},
 	})

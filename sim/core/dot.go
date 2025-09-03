@@ -495,39 +495,44 @@ func (dot *Dot) RestoreState(state DotState, sim *Simulation) {
 }
 
 type ExpectedTickConfig struct {
-	Sim                    *Simulation
-	Target                 *Unit
 	UseSnapshot            bool
 	BaseDmgFn              func(*Spell, *Unit) float64 // for non-snapshot damage calc
-	SnapshotCrit           OutcomeApplier
-	NormalCrit             OutcomeApplier
-	SkipHasteNormalization bool                     // disables haste normalization
-	ModifyResult           func(*SpellResult, *Dot) // optional final tweaks, apply multipliers, add crit mods
+	SnapshotOutcome        OutcomeApplier
+	NormalOutcome          OutcomeApplier
+	ModifyDamage           func(*SpellResult) // Modifies Damage before hasteNormalization
+	SkipHasteNormalization bool               // disables haste normalization
+	ModifyResult           func(*SpellResult) // optional final tweaks, apply multipliers, add crit mods
 }
 
-func (dot *Dot) CalcExpectedTickDamage(cfg ExpectedTickConfig) *SpellResult {
+func (dot *Dot) CalcExpectedTickDamage(sim *Simulation, target *Unit, cfg ExpectedTickConfig) *SpellResult {
 	if cfg.UseSnapshot {
-		result := dot.CalcSnapshotDamage(cfg.Sim, cfg.Target, cfg.SnapshotCrit)
+		result := dot.CalcSnapshotDamage(sim, target, cfg.SnapshotOutcome)
+		if cfg.ModifyDamage != nil {
+			cfg.ModifyDamage(result)
+		}
 		if !cfg.SkipHasteNormalization {
 			result.Damage /= dot.TickPeriod().Seconds()
 		}
 		if cfg.ModifyResult != nil {
-			cfg.ModifyResult(result, dot)
+			cfg.ModifyResult(result)
 		}
 		return result
 	}
 
 	baseDamage := 0.0
 	if cfg.BaseDmgFn != nil {
-		baseDamage = cfg.BaseDmgFn(dot.Spell, cfg.Target)
+		baseDamage = cfg.BaseDmgFn(dot.Spell, target)
 	}
 
-	result := dot.Spell.CalcPeriodicDamage(cfg.Sim, cfg.Target, baseDamage, cfg.NormalCrit)
+	result := dot.Spell.CalcPeriodicDamage(sim, target, baseDamage, cfg.NormalOutcome)
+	if cfg.ModifyDamage != nil {
+		cfg.ModifyDamage(result)
+	}
 	if !cfg.SkipHasteNormalization {
 		result.Damage /= dot.CalcTickPeriod().Round(time.Millisecond).Seconds()
 	}
 	if cfg.ModifyResult != nil {
-		cfg.ModifyResult(result, dot)
+		cfg.ModifyResult(result)
 	}
 	return result
 }

@@ -68,17 +68,14 @@ func (druid *Druid) registerMoonfireDoTSpell() {
 
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, useSnapshot bool) *core.SpellResult {
 			dot := spell.Dot(target)
-			return dot.CalcExpectedTickDamage(core.ExpectedTickConfig{
-				Sim:         sim,
-				Target:      target,
+			return dot.CalcExpectedTickDamage(sim, target, core.ExpectedTickConfig{
 				UseSnapshot: useSnapshot,
 				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
 					return druid.CalcScalingSpellDmg(MoonfireDotCoeff)
 				},
-				SnapshotCrit:           dot.OutcomeExpectedSnapshotCrit,
-				NormalCrit:             spell.OutcomeExpectedMagicCrit,
+				SnapshotOutcome:        dot.OutcomeExpectedSnapshotCrit,
+				NormalOutcome:          spell.OutcomeExpectedMagicCrit,
 				SkipHasteNormalization: false,
-				ModifyResult:           nil,
 			})
 		},
 	})

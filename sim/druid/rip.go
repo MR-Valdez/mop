@@ -84,19 +84,17 @@ func (druid *Druid) registerRipSpell() {
 
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, useSnapshot bool) *core.SpellResult {
 			dot := spell.Dot(target)
-			return dot.CalcExpectedTickDamage(core.ExpectedTickConfig{
-				Sim:         sim,
-				Target:      target,
+			return dot.CalcExpectedTickDamage(sim, target, core.ExpectedTickConfig{
 				UseSnapshot: useSnapshot,
 				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
 					cp := 5.0 // Hard-code this so that snapshotting calculations can be performed at any CP value.
 					ap := spell.MeleeAttackPower()
 					return baseDamage + comboPointCoeff*cp + attackPowerCoeff*cp*ap
 				},
-				SnapshotCrit:           dot.OutcomeExpectedSnapshotCrit,
-				NormalCrit:             spell.OutcomeExpectedMagicAlwaysHit,
+				SnapshotOutcome:        dot.OutcomeExpectedSnapshotCrit,
+				NormalOutcome:          spell.OutcomeExpectedMagicAlwaysHit,
 				SkipHasteNormalization: true,
-				ModifyResult: func(sr *core.SpellResult, d *core.Dot) {
+				ModifyResult: func(sr *core.SpellResult) {
 					if !useSnapshot {
 						attackTable := spell.Unit.AttackTables[target.UnitIndex]
 						critChance := spell.PhysicalCritChance(attackTable)
