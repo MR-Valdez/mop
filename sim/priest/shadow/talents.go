@@ -108,7 +108,6 @@ func (shadow *ShadowPriest) registerSolaceAndInstanity() {
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, _ bool) *core.SpellResult {
 			dot := spell.Dot(target)
 			return dot.CalcExpectedTickDamage(sim, target, core.ExpectedTickConfig{
-				UseSnapshot: false,
 				BaseDmgFn: func(s *core.Spell) float64 {
 					return shadow.CalcScalingSpellDmg(MfScale)
 				},
