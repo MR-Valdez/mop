@@ -71,9 +71,8 @@ func (priest *Priest) registerShadowWordPainSpell() {
 				BaseDmgFn: func(s *core.Spell) float64 {
 					return priest.CalcScalingSpellDmg(SwpScaleCoeff)
 				},
-				SnapshotOutcome:        dot.OutcomeExpectedSnapshotCrit,
-				NormalOutcome:          spell.OutcomeExpectedMagicCrit,
-				SkipHasteNormalization: false,
+				SnapshotOutcome: dot.OutcomeExpectedSnapshotCrit,
+				NormalOutcome:   spell.OutcomeExpectedMagicCrit,
 			})
 		},
 	})

@@ -66,9 +66,8 @@ func (priest *Priest) registerVampiricTouchSpell() {
 				BaseDmgFn: func(s *core.Spell) float64 {
 					return priest.CalcScalingSpellDmg(VtScaleCoeff)
 				},
-				SnapshotOutcome:        dot.OutcomeExpectedSnapshotCrit,
-				NormalOutcome:          spell.OutcomeExpectedMagicCrit,
-				SkipHasteNormalization: false,
+				SnapshotOutcome: dot.OutcomeExpectedSnapshotCrit,
+				NormalOutcome:   spell.OutcomeExpectedMagicCrit,
 			})
 		},
 	})

@@ -62,9 +62,8 @@ func (warlock *Warlock) RegisterCorruption(callback WarlockSpellCastedCallback) 
 				BaseDmgFn: func(s *core.Spell) float64 {
 					return warlock.CalcScalingSpellDmg(corruptionScale)
 				},
-				SnapshotOutcome:        dot.OutcomeExpectedSnapshotCrit,
-				NormalOutcome:          spell.OutcomeExpectedMagicCrit,
-				SkipHasteNormalization: false,
+				SnapshotOutcome: dot.OutcomeExpectedSnapshotCrit,
+				NormalOutcome:   spell.OutcomeExpectedMagicCrit,
 			})
 		},
 	})

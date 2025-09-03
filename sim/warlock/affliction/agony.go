@@ -83,7 +83,6 @@ func (affliction *AfflictionWarlock) registerAgony() {
 					// Always compare fully stacked agony damage
 					sr.Damage *= 10
 				},
-				SkipHasteNormalization: false,
 			})
 		},
 	})

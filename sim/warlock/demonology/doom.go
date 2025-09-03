@@ -61,9 +61,8 @@ func (demonology *DemonologyWarlock) registerDoom() {
 				BaseDmgFn: func(s *core.Spell) float64 {
 					return demonology.CalcScalingSpellDmg(doomScale)
 				},
-				SnapshotOutcome:        dot.OutcomeExpectedSnapshotCrit,
-				NormalOutcome:          spell.OutcomeExpectedMagicCrit,
-				SkipHasteNormalization: false,
+				SnapshotOutcome: dot.OutcomeExpectedSnapshotCrit,
+				NormalOutcome:   spell.OutcomeExpectedMagicCrit,
 			})
 		},
 	})

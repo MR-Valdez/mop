@@ -74,9 +74,8 @@ func (moonkin *BalanceDruid) registerSunfireDoTSpell() {
 				BaseDmgFn: func(s *core.Spell) float64 {
 					return moonkin.CalcScalingSpellDmg(SunfireDotCoeff)
 				},
-				SnapshotOutcome:        dot.OutcomeExpectedSnapshotCrit,
-				NormalOutcome:          spell.OutcomeExpectedMagicCrit,
-				SkipHasteNormalization: false,
+				SnapshotOutcome: dot.OutcomeExpectedSnapshotCrit,
+				NormalOutcome:   spell.OutcomeExpectedMagicCrit,
 			})
 		},
 	})

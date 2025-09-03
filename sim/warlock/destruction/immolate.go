@@ -105,9 +105,8 @@ func (destruction *DestructionWarlock) registerImmolate() {
 				BaseDmgFn: func(s *core.Spell) float64 {
 					return destruction.CalcScalingSpellDmg(immolateCoeff)
 				},
-				SnapshotOutcome:        dot.OutcomeExpectedSnapshotCrit,
-				NormalOutcome:          spell.OutcomeExpectedMagicCrit,
-				SkipHasteNormalization: false,
+				SnapshotOutcome: dot.OutcomeExpectedSnapshotCrit,
+				NormalOutcome:   spell.OutcomeExpectedMagicCrit,
 			})
 		},
 	})

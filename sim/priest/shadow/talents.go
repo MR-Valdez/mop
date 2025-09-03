@@ -112,7 +112,6 @@ func (shadow *ShadowPriest) registerSolaceAndInstanity() {
 				BaseDmgFn: func(s *core.Spell) float64 {
 					return shadow.CalcScalingSpellDmg(MfScale)
 				},
-				SnapshotOutcome:        nil,
 				NormalOutcome:          spell.OutcomeExpectedMagicCrit,
 				SkipHasteNormalization: true,
 			})

@@ -60,9 +60,8 @@ func (affliction *AfflictionWarlock) registerUnstableAffliction() {
 				BaseDmgFn: func(s *core.Spell) float64 {
 					return affliction.CalcScalingSpellDmg(uaScale)
 				},
-				SnapshotOutcome:        dot.OutcomeExpectedSnapshotCrit,
-				NormalOutcome:          spell.OutcomeExpectedMagicCrit,
-				SkipHasteNormalization: false,
+				SnapshotOutcome: dot.OutcomeExpectedSnapshotCrit,
+				NormalOutcome:   spell.OutcomeExpectedMagicCrit,
 			})
 		},
 	})

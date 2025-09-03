@@ -73,9 +73,8 @@ func (druid *Druid) registerMoonfireDoTSpell() {
 				BaseDmgFn: func(s *core.Spell) float64 {
 					return druid.CalcScalingSpellDmg(MoonfireDotCoeff)
 				},
-				SnapshotOutcome:        dot.OutcomeExpectedSnapshotCrit,
-				NormalOutcome:          spell.OutcomeExpectedMagicCrit,
-				SkipHasteNormalization: false,
+				SnapshotOutcome: dot.OutcomeExpectedSnapshotCrit,
+				NormalOutcome:   spell.OutcomeExpectedMagicCrit,
 			})
 		},
 	})

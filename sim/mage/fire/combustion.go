@@ -96,7 +96,6 @@ func (fire *FireMage) registerCombustionSpell() {
 				BaseDmgFn: func(s *core.Spell) float64 {
 					return calculatedDotTick(sim, target)
 				},
-				SnapshotOutcome:        nil,
 				NormalOutcome:          spell.OutcomeExpectedMagicAlwaysHit,
 				SkipHasteNormalization: true,
 				ModifyResult: func(sr *core.SpellResult) {

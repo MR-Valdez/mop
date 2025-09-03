@@ -355,7 +355,6 @@ func (hp *HunterPet) newFrostStormBreath() *core.Spell {
 				BaseDmgFn: func(s *core.Spell) float64 {
 					return 206 + (spell.MeleeAttackPower() * 0.40)
 				},
-				SnapshotOutcome:        nil,
 				NormalOutcome:          spell.OutcomeExpectedMagicCrit,
 				SkipHasteNormalization: true,
 			})
