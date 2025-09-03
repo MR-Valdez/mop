@@ -91,19 +91,22 @@ func (fire *FireMage) registerCombustionSpell() {
 		},
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, useSnapshot bool) *core.SpellResult {
 			dot := spell.Dot(target)
-			return dot.CalcExpectedTickDamage(sim, target, false,
-				func(s *core.Spell, u *core.Unit) float64 {
+			return dot.CalcExpectedTickDamage(core.ExpectedTickConfig{
+				Sim:         sim,
+				Target:      target,
+				UseSnapshot: false,
+				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
 					return calculatedDotTick(sim, target)
 				},
-				nil,
-				spell.OutcomeExpectedMagicAlwaysHit,
-				true,
-				func(sr *core.SpellResult, d *core.Dot) {
+				SnapshotCrit:           nil,
+				NormalCrit:             spell.OutcomeExpectedMagicAlwaysHit,
+				SkipHasteNormalization: true,
+				ModifyResult: func(sr *core.SpellResult, d *core.Dot) {
 					critChance := spell.SpellCritChance(target)
 					critMod := (critChance * (spell.CritMultiplier - 1))
 					sr.Damage *= 1 + critMod
 				},
-			)
+			})
 		},
 		ApplyEffects: func(sim *core.Simulation, target *core.Unit, spell *core.Spell) {
 			spell.Dot(target).Apply(sim)

@@ -72,18 +72,21 @@ func (affliction *AfflictionWarlock) registerAgony() {
 
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, useSnapshot bool) *core.SpellResult {
 			dot := spell.Dot(target)
-			return dot.CalcExpectedTickDamage(sim, target, useSnapshot,
-				func(s *core.Spell, u *core.Unit) float64 {
+			return dot.CalcExpectedTickDamage(core.ExpectedTickConfig{
+				Sim:         sim,
+				Target:      target,
+				UseSnapshot: useSnapshot,
+				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
 					return affliction.CalcScalingSpellDmg(agonyScale)
 				},
-				dot.OutcomeExpectedSnapshotCrit,
-				spell.OutcomeExpectedMagicCrit,
-				false,
-				func(sr *core.SpellResult, d *core.Dot) {
+				SnapshotCrit:           dot.OutcomeExpectedSnapshotCrit,
+				NormalCrit:             spell.OutcomeExpectedMagicCrit,
+				SkipHasteNormalization: false,
+				ModifyResult: func(sr *core.SpellResult, d *core.Dot) {
 					// Always compare fully stacked agony damage
 					sr.Damage *= 10
 				},
-			)
+			})
 		},
 	})
 }

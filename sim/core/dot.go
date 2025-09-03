@@ -494,56 +494,40 @@ func (dot *Dot) RestoreState(state DotState, sim *Simulation) {
 	sim.AddPendingAction(dot.tickAction)
 }
 
-// CalcExpectedTickDamage computes the expected damage for a DoT tick, either
-// from snapshot values or by calculating periodic damage.
-//
-// Parameters:
-//   - sim: the current simulation.
-//   - target: target of dot.
-//   - useSnapshot: if true, calculate from snapshot values;
-//     otherwise calculate each tick.
-//   - baseDmgFn: function to compute base damage when not snapshotting.
-//   - snapshotCrit: crit outcome type for snapshot damage.
-//   - normalCrit: crit outcome type for periodic damage.
-//   - skipTickDivision: skips division of ticks aka DeepWounds
-//   - modifyResult: optional hook to adjust the result (e.g. apply multipliers, add crit mods).
-//
-// This is a helper function for DoT calculations so that each spell only
-// needs to provide its unique scaling and modifiers.
-//
-// TODO: if modifyResult needs the raw PerTick value you may need to adjust the order and do a modifyDamage func and postTickModify func
-func (dot *Dot) CalcExpectedTickDamage(
-	sim *Simulation,
-	target *Unit,
-	useSnapshot bool,
-	baseDmgFn func(*Spell, *Unit) float64, // optional for non-snapshot
-	snapshotCrit OutcomeApplier,
-	normalCrit OutcomeApplier,
-	skipTickDivision bool, // flag to disable default tick division
-	modifyResult func(*SpellResult, *Dot), // optional final tweaks
-) *SpellResult {
-	if useSnapshot {
-		result := dot.CalcSnapshotDamage(sim, target, snapshotCrit)
-		if !skipTickDivision {
+type ExpectedTickConfig struct {
+	Sim                    *Simulation
+	Target                 *Unit
+	UseSnapshot            bool
+	BaseDmgFn              func(*Spell, *Unit) float64 // for non-snapshot damage calc
+	SnapshotCrit           OutcomeApplier
+	NormalCrit             OutcomeApplier
+	SkipHasteNormalization bool                     // disables haste normalization
+	ModifyResult           func(*SpellResult, *Dot) // optional final tweaks, apply multipliers, add crit mods
+}
+
+func (dot *Dot) CalcExpectedTickDamage(cfg ExpectedTickConfig) *SpellResult {
+	if cfg.UseSnapshot {
+		result := dot.CalcSnapshotDamage(cfg.Sim, cfg.Target, cfg.SnapshotCrit)
+		if !cfg.SkipHasteNormalization {
 			result.Damage /= dot.TickPeriod().Seconds()
 		}
-		if modifyResult != nil {
-			modifyResult(result, dot)
+		if cfg.ModifyResult != nil {
+			cfg.ModifyResult(result, dot)
 		}
 		return result
 	}
 
 	baseDamage := 0.0
-	if baseDmgFn != nil {
-		baseDamage = baseDmgFn(dot.Spell, target)
+	if cfg.BaseDmgFn != nil {
+		baseDamage = cfg.BaseDmgFn(dot.Spell, cfg.Target)
 	}
 
-	result := dot.Spell.CalcPeriodicDamage(sim, target, baseDamage, normalCrit)
-	if !skipTickDivision {
+	result := dot.Spell.CalcPeriodicDamage(cfg.Sim, cfg.Target, baseDamage, cfg.NormalCrit)
+	if !cfg.SkipHasteNormalization {
 		result.Damage /= dot.CalcTickPeriod().Round(time.Millisecond).Seconds()
 	}
-	if modifyResult != nil {
-		modifyResult(result, dot)
+	if cfg.ModifyResult != nil {
+		cfg.ModifyResult(result, dot)
 	}
 	return result
 }

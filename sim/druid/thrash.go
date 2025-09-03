@@ -140,15 +140,18 @@ func (druid *Druid) registerThrashCatSpell() {
 
 		ExpectedTickDamage: func(sim *core.Simulation, target *core.Unit, spell *core.Spell, useSnapshot bool) *core.SpellResult {
 			dot := spell.Dot(target)
-			return dot.CalcExpectedTickDamage(sim, target, useSnapshot,
-				func(s *core.Spell, u *core.Unit) float64 {
+			return dot.CalcExpectedTickDamage(core.ExpectedTickConfig{
+				Sim:         sim,
+				Target:      target,
+				UseSnapshot: useSnapshot,
+				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
 					return flatTickDamage + 0.141*spell.MeleeAttackPower()
 				},
-				dot.OutcomeExpectedSnapshotCrit,
-				spell.OutcomeExpectedPhysicalCrit,
-				true,
-				nil,
-			)
+				SnapshotCrit:           dot.OutcomeExpectedSnapshotCrit,
+				NormalCrit:             spell.OutcomeExpectedPhysicalCrit,
+				SkipHasteNormalization: true,
+				ModifyResult:           nil,
+			})
 		},
 
 		RelatedAuraArrays: druid.WeakenedBlowsAuras.ToMap(),
