@@ -63,7 +63,7 @@ func (priest *Priest) registerVampiricTouchSpell() {
 			dot := spell.Dot(target)
 			return dot.CalcExpectedTickDamage(sim, target, core.ExpectedTickConfig{
 				UseSnapshot: useSnapshot,
-				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
+				BaseDmgFn: func(s *core.Spell) float64 {
 					return priest.CalcScalingSpellDmg(VtScaleCoeff)
 				},
 				SnapshotOutcome:        dot.OutcomeExpectedSnapshotCrit,

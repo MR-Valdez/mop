@@ -58,7 +58,7 @@ func (shadow *ShadowPriest) registerMindFlaySpell() *core.Spell {
 			dot := spell.Dot(target)
 			return dot.CalcExpectedTickDamage(sim, target, core.ExpectedTickConfig{
 				UseSnapshot: false,
-				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
+				BaseDmgFn: func(s *core.Spell) float64 {
 					return shadow.CalcScalingSpellDmg(MfScale)
 				},
 				SnapshotOutcome:        nil,

@@ -497,7 +497,7 @@ func (dot *Dot) RestoreState(state DotState, sim *Simulation) {
 
 type ExpectedTickConfig struct {
 	UseSnapshot            bool
-	BaseDmgFn              func(*Spell, *Unit) float64 // for non-snapshot damage calc
+	BaseDmgFn              func(*Spell) float64 // for non-snapshot damage calc
 	SnapshotOutcome        OutcomeApplier
 	NormalOutcome          OutcomeApplier
 	ModifyDamage           func(*SpellResult) // Modifies Damage before hasteNormalization
@@ -522,7 +522,7 @@ func (dot *Dot) CalcExpectedTickDamage(sim *Simulation, target *Unit, cfg Expect
 
 	baseDamage := 0.0
 	if cfg.BaseDmgFn != nil {
-		baseDamage = cfg.BaseDmgFn(dot.Spell, target)
+		baseDamage = cfg.BaseDmgFn(dot.Spell)
 	}
 
 	result := dot.Spell.CalcPeriodicDamage(sim, target, baseDamage, cfg.NormalOutcome)

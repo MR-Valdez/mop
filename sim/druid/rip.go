@@ -86,7 +86,7 @@ func (druid *Druid) registerRipSpell() {
 			dot := spell.Dot(target)
 			return dot.CalcExpectedTickDamage(sim, target, core.ExpectedTickConfig{
 				UseSnapshot: useSnapshot,
-				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
+				BaseDmgFn: func(s *core.Spell) float64 {
 					cp := 5.0 // Hard-code this so that snapshotting calculations can be performed at any CP value.
 					ap := spell.MeleeAttackPower()
 					return baseDamage + comboPointCoeff*cp + attackPowerCoeff*cp*ap

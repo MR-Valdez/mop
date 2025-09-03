@@ -352,7 +352,7 @@ func (hp *HunterPet) newFrostStormBreath() *core.Spell {
 			dot := spell.Dot(target)
 			return dot.CalcExpectedTickDamage(sim, target, core.ExpectedTickConfig{
 				UseSnapshot: false,
-				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
+				BaseDmgFn: func(s *core.Spell) float64 {
 					return 206 + (spell.MeleeAttackPower() * 0.40)
 				},
 				SnapshotOutcome:        nil,

@@ -68,7 +68,7 @@ func (priest *Priest) registerShadowWordPainSpell() {
 				Sim:         sim,
 				Target:      target,
 				UseSnapshot: useSnapshot,
-				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
+				BaseDmgFn: func(s *core.Spell) float64 {
 					return priest.CalcScalingSpellDmg(SwpScaleCoeff)
 				},
 				SnapshotOutcome:        dot.OutcomeExpectedSnapshotCrit,

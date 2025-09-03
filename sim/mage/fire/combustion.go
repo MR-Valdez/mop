@@ -93,7 +93,7 @@ func (fire *FireMage) registerCombustionSpell() {
 			dot := spell.Dot(target)
 			return dot.CalcExpectedTickDamage(sim, target, core.ExpectedTickConfig{
 				UseSnapshot: false,
-				BaseDmgFn: func(s *core.Spell, u *core.Unit) float64 {
+				BaseDmgFn: func(s *core.Spell) float64 {
 					return calculatedDotTick(sim, target)
 				},
 				SnapshotOutcome:        nil,
