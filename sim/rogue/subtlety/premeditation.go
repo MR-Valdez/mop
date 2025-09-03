@@ -36,8 +36,9 @@ func (subRogue *SubtletyRogue) registerPremeditation() {
 	})
 
 	subRogue.AddMajorCooldown(core.MajorCooldown{
-		Spell:    subRogue.Premeditation,
-		Type:     core.CooldownTypeDPS,
-		Priority: core.CooldownPriorityLow,
+		Spell:              subRogue.Premeditation,
+		Type:               core.CooldownTypeDPS,
+		Priority:           core.CooldownPriorityLow,
+		AllowSpellQueueing: true,
 	})
 }

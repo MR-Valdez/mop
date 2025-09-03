@@ -112,8 +112,9 @@ func (comRogue *CombatRogue) registerKillingSpreeCD() {
 	})
 
 	comRogue.AddMajorCooldown(core.MajorCooldown{
-		Spell:    comRogue.KillingSpree,
-		Type:     core.CooldownTypeDPS,
-		Priority: core.CooldownPriorityDefault,
+		Spell:              comRogue.KillingSpree,
+		Type:               core.CooldownTypeDPS,
+		Priority:           core.CooldownPriorityDefault,
+		AllowSpellQueueing: true,
 	})
 }

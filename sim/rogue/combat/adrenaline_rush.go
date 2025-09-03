@@ -60,8 +60,9 @@ func (comRogue *CombatRogue) registerAdrenalineRushCD() {
 	})
 
 	comRogue.AddMajorCooldown(core.MajorCooldown{
-		Spell:    comRogue.AdrenalineRush,
-		Type:     core.CooldownTypeDPS,
-		Priority: core.CooldownPriorityDefault,
+		Spell:              comRogue.AdrenalineRush,
+		Type:               core.CooldownTypeDPS,
+		Priority:           core.CooldownPriorityDefault,
+		AllowSpellQueueing: true,
 	})
 }

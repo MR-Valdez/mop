@@ -50,8 +50,9 @@ func (subRogue *SubtletyRogue) registerShadowDanceCD() {
 	})
 
 	subRogue.AddMajorCooldown(core.MajorCooldown{
-		Spell:    subRogue.ShadowDance,
-		Type:     core.CooldownTypeDPS,
-		Priority: core.CooldownPriorityDefault,
+		Spell:              subRogue.ShadowDance,
+		Type:               core.CooldownTypeDPS,
+		Priority:           core.CooldownPriorityDefault,
+		AllowSpellQueueing: true,
 	})
 }

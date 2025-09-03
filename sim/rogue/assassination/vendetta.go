@@ -12,6 +12,7 @@ func (sinRogue *AssassinationRogue) registerVendetta() {
 	actionID := core.ActionID{SpellID: 79140}
 	hasGlyph := sinRogue.HasMajorGlyph(proto.RogueMajorGlyph_GlyphOfVendetta)
 	duration := time.Second * time.Duration(core.TernaryFloat64(hasGlyph, 30, 20))
+	bonus := core.TernaryFloat64(hasGlyph, 1.25, 1.3)
 
 	vendettaAuras := sinRogue.NewEnemyAuraArray(func(target *core.Unit) *core.Aura {
 		return target.GetOrRegisterAura(core.Aura{
@@ -21,7 +22,7 @@ func (sinRogue *AssassinationRogue) registerVendetta() {
 			OnGain: func(aura *core.Aura, sim *core.Simulation) {
 				core.EnableDamageDoneByCaster(DDBC_Vendetta, DDBC_Total, sinRogue.AttackTables[aura.Unit.UnitIndex], func(sim *core.Simulation, spell *core.Spell, attackTable *core.AttackTable) float64 {
 					if spell.Matches(rogue.RogueSpellsAll) || spell.ProcMask.Matches(core.ProcMaskMeleeWhiteHit) {
-						return core.TernaryFloat64(hasGlyph, 1.3, 1.25)
+						return bonus
 					}
 					return 1.0
 				})
