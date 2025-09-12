@@ -110,7 +110,7 @@ const SPEC_CONFIG = registerSpecConfig(Spec.SpecArcaneMage, {
 		// Preset talents that the user can quickly select.
 		talents: [Presets.ArcaneTalents, Presets.ArcaneTalentsCleave],
 		// Preset gear configurations that the user can quickly select.
-		gear: [Presets.P1_PREBIS, Presets.P1_POST_MSV, Presets.P1_POST_HOF, Presets.P1_BIS],
+		gear: [Presets.P1_PREBIS, Presets.P1_POST_MSV, Presets.P1_POST_HOF, Presets.P1_BIS, Presets.P2_BIS],
 
 		builds: [Presets.P1_PRESET_BUILD_DEFAULT, Presets.P1_PRESET_BUILD_CLEAVE],
 	},
